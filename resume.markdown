@@ -59,6 +59,8 @@ Advisor: Luis Rocha
 ---
 
 ## Skills and Achievements
+
+|                  |                                                                                 |
 |:---------------- | ------------------------------------------------------------------------------: |
 | *Languages*      |                                          Python, Rust, C++, Bash, SQL, $\LaTeX$ |
 | *Libraries*      |           NumPy, Pandas, scikit-learn, TensorFlow, graph_tool, Tidyverse, vegan |
