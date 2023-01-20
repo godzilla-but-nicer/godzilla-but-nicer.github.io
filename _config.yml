@@ -28,7 +28,7 @@ twitter_username: patrickgwall
 github_username:  godzilla-but-nicer
 
 # Build settings
-remote_theme: pages-themes/hacker@v0.2.0
+remote_theme: broccolini/swiss
 plugins:
   - jekyll-feed
   - jekyll-remote-theme
