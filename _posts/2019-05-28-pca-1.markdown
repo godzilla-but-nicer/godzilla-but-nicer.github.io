@@ -5,6 +5,9 @@ date:   2019-05-28 22:44:00 -0500
 categories: methods
 ---
 
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
 Let’s go ahead and assume that we have too many features. We don’t know which 
 features are important and we don’t care about whether our model directly 
 speaks the language of our features. This might be a job for…
