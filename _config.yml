@@ -28,10 +28,15 @@ twitter_username: patrickgwall
 github_username:  godzilla-but-nicer
 
 # Build settings
-# remote_theme: pages-themes/hacker@v0.2.0
-theme: minima
+remote_theme: jekyll/minima
+
+minima:
+  skin: auto
+
 plugins:
   - jekyll-feed
+
+markdown: kramdown
 
 # Exclude from processing.
 # The following items will not be processed, by default.

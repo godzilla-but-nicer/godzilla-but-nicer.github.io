@@ -1,16 +1,232 @@
 ---
 layout: post
-title:  "Test post!"
+title:  "Whats the deal with PCA: Eigenvectors"
 date:   2019-06-18 00:00:00 -0500
 categories: jekyll update
 ---
 
-test
+## 3. Eigenvectors and Eigenvalues
 
-{% highlight ruby %}
-def print_hi(name)
-  puts "Hi, #{name}"
-end
-print_hi('Tom')
-#=> prints 'Hi, Tom' to STDOUT.
+In this post we will be covering the extraction of eigenvectors and eigenvalues.
+We will start from where we left off, with the covariance matrix for all four of
+our features in the iris dataset. But, before we get into the eigen of it all
+we’re going to take a quick detour:
+
+### Covariance Matrix as a Linear Transformation
+
+For a quick look at linear transformations themselves take a look at [this
+little companion post I wrote]({% post_url
+2019-06-10-linear-transformations %}).
+
+Let’s look at just two of our iris features, petal length and petal width. With
+two dimensions we can really parse what’s going on and we can even visualize it.
+We’re going to be using the covariance matrix as a linear transformation and
+(hopefully) seeing some cool stuff about how PCA works without getting into
+linear algebra proofs that I don’t understand.
+
+$$
+\Sigma = \begin{bmatrix} 1 & 0.96 \\ 0.96 & 1 \end{bmatrix}
+$$
+
+When we perform this linear transformation we are, in effect, “pushing” a vector
+by calculating a new vector based on the original. Because the transformation
+matrix is the covariance matrix, the directions, and the amounts that we push in
+those directions, are determined by the covariations in our data. Another way of
+looking at it is that we are expressing our data using the covariance as our
+basis.
+
+Before we investigate the transformation further, let’s take a look at the data
+itself.
+
+![standardized petal length vs petal width](/assets/pca-2/petal_data-2.png)
+
+The variance in our petal features is very easy to describe. As petal length
+increases, petal width tends to increase as well. This increasing diagonal is
+clearly the direction of greatest variance.
+
+First, we will look at how the covariance matrix transforms all of our data.
+When we take all of our vectors consisting of petal lengths and widths for all
+of the samples in our data matrix and plot them, we get the petal width vs.
+petal length scatter plot shown above. When we plot that same data after
+transforming each of the vectors with the covariance matrix we get this:
+
+![transformed petal data](/assets/pca-2/cov_transformation-1.png)
+
+That is a lot different! The covariance matrix has pushed the points so that
+they lie almost on a line. Notice the slight deviations we see from the line
+especially in the upper right where our original data is a little more spread
+out. Because of these deviations, we know that the covariance matrix is not
+simply projecting all of our data on a line. But then what is it doing?
+
+Instead of looking at our data, let's try and represent petal space itself with
+a regular lattice. The covariance matrix for our petal features turns this
+regular grid (and basis vectors):
+
+![original grid and basis vectors](/assets/pca-2/grid_before-2.png)
+
+into this:
+
+![transformed grid and basis vectors](/assets/pca-2/grid_after-4.png)
+
+In this plot, we are looking at exactly the same number of points as in the
+original grid. In fact, we are looking at the same points as in the grid.
+
+The covariance matrix has elongated their spread along the direction of most
+variance (our *first principal component*) in our original data by pushing the
+vectors away from the origin in that direction. Simultaneously, it is pushing
+the vectors toward the origin in the perpendicular direction (our *second
+principal component*). The change is so extreme because the covariance is very
+high. Even if the covariance were much lower, however, the principal components
+would still be visible.
+
+The covariance matrix provides a basis that emphasizes the direction of most
+variance. This basis has this effect because both vectors point in that
+direction. An increase in one is also an increase in the other, just as we
+observed in our data. It makes sense that we can find this basis because the
+covariance matrix is literally made up of information about the relationships
+between our variables.
+
+We want to describe our data in terms of the directions of maximum variance and
+we’ve indirectly identified them. Unfortunately, pushing our data around
+according to those directions is not good enough. We need to isolate those
+directions and project our data onto them. Luckily this is actually quite easy.
+Finally, we return to:
+
+### Eigenvectors and Eigenvalues
+
+Both eigenvectors and eigenvalues are defined by the same equation. For a matrix
+$A$, the scalar eigenvalue $\lambda$ performs the same function as $A$ when
+multiplied by an eigenvector $\mathbf{v}$.
+
+$$
+A\mathbf{v} = \lambda \mathbf{v}
+$$
+
+The definition of an eigenvector is then something like this: an
+eigenvector is a vector that when transformed by a particular matrix, changes
+only in magnitude. In other words, an eigenvector is a vector that points
+exactly in a direction that a transformation matrix pushes things along.
+
+Eigenvectors show the direction of the push, eigenvalues show the amount of
+pushing.
+
+Let’s look at that grid of points again, this time with some vectors overlaid.
+
+![a regular grid of points and some vectors](/assets/pca-2/vec_before-2.png)
+
+So obviously, I’ve cheated a little bit here (I already know the eigenvectors)
+and plotted the eigenvectors along with some arbitrary vectors. Let’s see what
+happens when we transform these vectors, and the space they are in, with our
+covariance matrix.
+
+![transformed grid and vectors](/assets/pca-2/vec_after-2.png)
+
+The arbitrary vectors have clearly rotated in the plots above but the
+eigenvectors have not.
+
+Note the change in scale in the transformed plot above. The eigenvector along
+the increasing diagonal is still along the increasing diagonal but has gotten
+longer. The other eigenvector also hasn’t been rotated but has gotten much
+shorter. In fact, in the plot above the shorter eigenvector is actually
+multiplied by a factor of 7 just so we could actually see it.
+
+We can also make the important observation that the eigenvectors are
+perpendicular or orthogonal. The eigenvectors of symmetrical, real-valued
+matrices that have different eigenvalues are always orthogonal. When working
+with a covariance matrix, this should always be true.
+
+Orthogonality is an important relationship that two vectors can have. We
+formally define two vectors $\mathbf{x}$ and $\mathbf{y}$ as orthogonal if their
+dot product is zero:
+
+$$
+\mathbf{x} \cdot \mathbf{y} = 0
+$$
+
+The geometric interpretation is, of course, that two vectors are orthogonal if
+they are perpendicular. That is, if the angle between them is exactly
+90$^\circ$. But this limits our thinking a little bit.
+
+Orthogonality is a property that does not restrict itself to any number of
+dimensions. If we are working with $n$ dimensions, we can find $n$ orthogonal
+vectors even if we can’t visualize them as perpendicular.
+
+We like orthogonal vectors because we can think of them as completely
+uncorrelated and independent. In PCA we aim to use this property of orthogonal
+vectors to maximize information content while minimizing dimensionality. The
+independent nature of orthogonal principal components is what allows us to do
+this.
+
+Now let’s talk about the eigenvalues. These values accompany eigenvectors as a
+pair and describe the stretching of the eigenvector. We can tell just by looking
+at the plots that the upper eigenvector should have a corresponding eigenvalue
+somewhere above 1 and the right eigenvalue should have an eigenvalue below 1.
+
+I’m not going to go into how we calculate eigenvalues and eigenvectors by hand.
+It gets very messy with increasing numbers of dimensions and its very easy to do
+in python. Plus, [Paul’s Online Math
+Notes](https://tutorial.math.lamar.edu/Classes/DE/LA_Eigen.aspx) describes it
+way better than I ever could. Here’s how we can do it in python using the eig
+function from the linear algebra (linalg) module of numpy:
+
+{% highlight python %}
+import numpy as np
+from sklearn import datasets
+from sklearn.preprocessing import StandardScaler
+
+# load iris and select only the petal features
+iris = datasets.load_iris()
+X = iris.data[:, 2:]
+
+# Standardize
+sc = StandardScaler()
+X_std = sc.fit_transform(X)
+
+# get covariance matrix
+X_cov = np.cov(X_std.T, ddof=0)
+
+# Eigendecomposition
+eigenvals, eigenvecs = np.linalg.eig(X_cov)
+
+print('eigenvalue, eigenvector:')
+print('------------------------')
+for val, vec in zip(eigenvals, eigenvecs.T):
+    print('{:.2f}, [{:.4f}, {:.4f}]'.format( \
+            val, vec[1], vec[0]))
 {% endhighlight %}
+
+```text
+> eigenvalue, eigenvector:
+  ------------------------
+  1.96, [0.7071, 0.7071]
+  0.04, [0.7071, -0.7071]
+```
+
+First of all, we can see that our predictions about the eigenvalues matched our
+observations from the plots. Secondly, it’s REALLY easy to do a lot of linear
+algebra quickly in numpy. Finally, our eigenvectors are located perfectly along
+the diagonal! 0.7071 is, in fact, an approximation of whose signifigance can be
+seen here:
+
+![unit circle for babies](/assets/pca-2/unit-circle-791x1024.png)
+
+This perfect angle of 45$^\circ$ for the eigenvectors is a of consequence using
+only two dimensions of standardized data and is very unlikely without
+standardization. In general we should not expect to see eigenvalues of
+$\frac{\sqrt{2}}{2}$.
+
+So, we’ve seen above that the covariance matrix transforms in such a way as to
+extend space along the direction of greatest variance. We’ve also seen that it
+contracts space in a direction orthogonal to that direction. We’ve now extracted
+the exact vectors that point in these two directions, our principal components,
+but just to be sure let’s look at our data with our principal components
+overlaid:
+
+![eigenvectors for our petal data](/assets/pca-2/petal_eigen-2.png)
+
+Not only do the eigenvectors point out our principal components, but their
+eigenvalues tell us how important they are. Higher eigenvalues correspond to
+more variance in that direction. Almost all of our variance is captured in the
+increasing diagonal. We first translated that into math as our covariance
+matrix. The eigenvalues and eigenvectors then condensed that information into
+scalar ratings of variation in concrete directions.

@@ -49,7 +49,7 @@ $$ \mathbf{v} = \begin{bmatrix} 2 \\ 1 \end{bmatrix} $$
 
 First of all, let’s take a look at this vector:
 
-![a vector and its basis](../assets/linear-transformations/before_trans-1.png)
+![a vector and its basis](/assets/linear-transformations/before_trans-1.png)
 
 Note that in the image I’ve also included the basis vectors $\hat{i}$ and
 $\hat{j}$.
@@ -72,7 +72,7 @@ However, it’s probably more enlightening, and certainly more interesting to
 look at this transformation visually. Here is our vector (and our basis
 vectors) after the transformation.
 
-![holy fucking shit](../assets/linear-transformations/after_trans.png)
+![holy fucking shit](/assets/linear-transformations/after_trans.png)
 
 We’ve kind of rotated and squished things together. Our basis vectors are no
 longer orthogonal and Our vector has been stretched and rotated. One thing 
@@ -100,13 +100,13 @@ this as changing space and all of the vectors that it may contain.
 
 Consider a regular grid of points
 
-![a regular grid of points](../assets/linear-transformations/before_grid.png)
+![a regular grid of points](/assets/linear-transformations/before_grid.png)
 
 We can think of each of these points mathematically as vectors that reach out
 from the origin. The points show only the endpoints of these vectors. When we
 transform each of these points with our matrix, we get a new version of space
 
-![an irregular grid of points](../assets/linear-transformations/after_grid.png)
+![an irregular grid of points](/assets/linear-transformations/after_grid.png)
 
 Our new space is rotated and stretched, just like the arbitrary vector we put
 inside of it in the earlier example. This is, of course, a consequence of our
@@ -120,49 +120,49 @@ arbitrary vector.
 
 $$ A=\begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix} $$
 
-![scaling transformation](../assets/linear-transformations/scale.png)
+![scaling transformation](/assets/linear-transformations/scale.png)
 
 ## Reflection
 
 $$ A=\begin{bmatrix} -1 & 0 \\ 0 & 1 \end{bmatrix} $$
 
-![reflection transformation](../assets/linear-transformations/reflection.png)
+![reflection transformation](/assets/linear-transformations/reflection.png)
 
 ## Transposition (or something)
 
 $$ A=\begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix} $$
 
-![transposition transformation](../assets/linear-transformations/transpose.png)
+![transposition transformation](/assets/linear-transformations/transpose.png)
 
 ## Shear
 
 $$ A=\begin{bmatrix} 1 & 1.5 \\ 0 & 1 \end{bmatrix} $$
 
-![Shear transformation](../assets/linear-transformations/shear.png)
+![Shear transformation](/assets/linear-transformations/shear.png)
 
 ## Rotation
 
 $$ A=\begin{bmatrix} \cos{\frac{\pi}{4}} & -\sin{\frac{\pi}{4}} \\ \sin{\frac{\pi}{4}} & \cos{\frac{\pi}{4}} \end{bmatrix} $$
 
-![rotation transformation](../assets/linear-transformations/rotation.png)
+![rotation transformation](/assets/linear-transformations/rotation.png)
 
 ## Projection
 
 $$ A=\begin{bmatrix} 1 & 0 \\ 0 & 0 \end{bmatrix} $$
 
-![projection transformation](../assets/linear-transformations/projection.png)
+![projection transformation](/assets/linear-transformations/projection.png)
 
 ## Single-dimension Scale
 
 $$ A=\begin{bmatrix} 0.5 & 0 \\ 0 & 1 \end{bmatrix} $$
 
-![single-dimensional scale](../assets/linear-transformations/dim_change.png)
+![single-dimensional scale](/assets/linear-transformations/dim_change.png)
 
 ## [Squeeze](https://www.youtube.com/watch?v=RQciegmLPAo)
 
 $$ A=\begin{bmatrix} 1 & 0.5 \\ 0.5 & 1 \end{bmatrix} $$
 
-![squeeze transformation](../assets/linear-transformations/squeeze.png)
+![squeeze transformation](/assets/linear-transformations/squeeze.png)
 
 ### (Re)sources
 

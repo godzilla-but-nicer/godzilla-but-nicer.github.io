@@ -2,20 +2,21 @@
 layout: post
 title:  "Whats the deal with PCA: Covariance"
 date:   2019-05-28 22:44:00 -0500
+usemathjax: true
 categories: methods
 ---
 
-Let’s go ahead and assume that we have too many features. We don’t know which 
+Let’s go ahead and assume that we have too many features. We don’t know which
 features are important and we don’t care about whether our model directly 
 speaks the language of our features. This might be a job for…
 
-*Principal Component Analysis*
+### Principal Component Analysis
 
 These posts are about how and why principal component analysis works. We're 
 going to start with summary statistics of matrices and work our way up from 
 there.
 
-# What is principal component analysis?
+## What is principal component analysis?
 
 Principal component analysis, or PCA, is a technique for feature extraction. 
 PCA allows us to compress our data and reduce the number of dimensions while
@@ -26,7 +27,7 @@ components are the orthogonal directions in which our data varies. The process
 of PCA is the process of finding these principal components and using them to 
 transform our data.
 
-![baby's first PCA](../assets/pca-1/PCA_example-1024x576.png)
+![baby's first PCA](/assets/pca-1/PCA_example-1024x576.png)
 
 The first principal component is always the direction that captures the most
 variance in the data. The following components capture the next highest 
@@ -72,9 +73,94 @@ is a vector and not a scalar. This means that vector $\mathbf{x_j}$ is all of
 the values for feature $j$, in all of the samples. $\mu_j$ and $\sigma_j$ are
 the mean and standard deviation of the feature $j$.
 
-Before we move on let's look at what this does to our data.
-[The code can be seen here](../assets/pca-1/pca-1-code-1.html). We'll use the 
-famous iris dataset and functionality from `NumPy` and `scikit-learn`.
+Before we move on let's look at what this does to our data. 
+We'll use the famous iris dataset and functionality from `NumPy` and `scikit-learn`.
+
+{% highlight python %}
+from sklearn import datasets
+import numpy as np
+
+# load the iris dataset into python
+iris = datasets.load_iris()
+
+# put the iris data into an array X for now we will
+# stick to the first 6 samples
+X = iris.data[:6, :]
+
+# print the entire array, we can think of this 
+# mathematically as a matrix
+print('Data:')
+for sample in range(X.shape[0]):
+    print(X[sample, :])
+print('Feature names:', iris.feature_names)
+{% endhighlight %}
+
+```text
+> Data:
+  [5.1 3.5 1.4 0.2]
+  [4.9 3.  1.4 0.2]
+  [4.7 3.2 1.3 0.2]
+  [4.6 3.1 1.5 0.2]
+  [5.  3.6 1.4 0.2]
+  [5.4 3.9 1.7 0.4]
+  Feature names: ['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)']
+```
+
+{% highlight python %}
+# now lets look at what each of our x_j vectors
+# looks like to see the relationship
+for j in range(X.shape[1]):
+    print('x_' + str(j+1) +':')
+    print(X[:, j])
+    print('  Mean: {:.2f}'.format(np.mean(X[:, j])))
+    print('  Std. Dev: {:.2f}'.format(np.std(X[:, j])))
+{% endhighlight %}
+
+```text
+> x_1:
+  [5.1 4.9 4.7 4.6 5.  5.4]
+    Mean: 4.95
+    Std. Dev: 0.26
+  x_2:
+  [3.5 3.  3.2 3.1 3.6 3.9]
+    Mean: 3.38
+    Std. Dev: 0.31
+  x_3:
+  [1.4 1.4 1.3 1.5 1.4 1.7]
+    Mean: 1.45
+    Std. Dev: 0.13
+  x_4:
+  [0.2 0.2 0.2 0.2 0.2 0.4]
+    Mean: 0.23
+    Std. Dev: 0.07
+```
+
+{% highlight python %}
+from sklearn.preprocessing import StandardScaler
+
+# initialize StandardScaler
+sc = StandardScaler()
+
+# let it figure out means and standard deviations for each 
+# feature and use them to standardize the data
+sc.fit(X)
+X_std = sc.transform(X)
+
+# print the standardized data
+print('Standardized Data:')
+for sample in range(X_std.shape[0]):
+    print(X_std[sample, :])
+{% endhighlight %}
+
+```text
+> Standardized Data:
+  [ 0.57035183  0.37257241 -0.39735971 -0.4472136 ]
+  [-0.19011728 -1.22416648 -0.39735971 -0.4472136 ]
+  [-0.95058638 -0.58547092 -1.19207912 -0.4472136 ]
+  [-1.33082093 -0.9048187   0.39735971 -0.4472136 ]
+  [ 0.19011728  0.69192018 -0.39735971 -0.4472136 ]
+  [1.71105548 1.64996352 1.98679854 2.23606798]
+```
 
 It’s important to note that while standardization is not always necessary for
 PCA, sometimes it is. An example of when it might be useful can actually be
@@ -85,7 +171,7 @@ spread of values in sepal width. If one data point is above the mean by one
 centimeter in sepal length is that the same as being above the mean by one 
 centimeter in petal width?
 
-![the raw unfiltered iris dataset](../assets/pca-1/feature_spread-1024x683.png)
+![the raw unfiltered iris dataset](/assets/pca-1/feature_spread-1024x683.png)
 
 Well, no not really. Petal length ranges from about one to seven centimeters 
 judging from the above plot. A one centimeter deviation from the mean is pretty
@@ -99,12 +185,12 @@ eliminates the units from consideration and places the data on exactly the same
 scale. One unit for a standardized petal length is exactly the same distance
 from the mean as one unit for a standardized sepal width.
 
-![standardized iris dataset](../assets/pca-1/std_spread-1024x683.png)
+![standardized iris dataset](/assets/pca-1/std_spread-1024x683.png)
 
 ## 2. Construct covariance matrix
 
 Building the covariance matrix is the actual first step of PCA. In this step, 
-we will be building a square $p \by p$ matrix where each row and column 
+we will be building a square $p \times p$ matrix where each row and column 
 represents as feature. Each entry represents the covariance between the row 
 feature and the column feature at that position. 
 
@@ -114,6 +200,7 @@ variance is just the square of standard deviation. For our purposes, the
 differences are not particularly important, but some of these differences are
 explained well on 
 [this CrossValidated post](https://stats.stackexchange.com/questions/35123/whats-the-difference-between-variance-and-standard-deviation).
+
 In the following equations, the subscript $j$ refers to a feature and the
 superscript $i$ refers to a sample. The value $x_j^i$ therefore refers to the 
 $i$th value for the $j$th feature observed in the sample.
@@ -140,7 +227,7 @@ a positive result as the product. The same is true if the values for both
 features are below the mean. Conversely, if one value is below and one is
 above we will get a negative value. 
 
-![covarying features in the iris dataset](../assets/pca-1/cov_plot-1024x683.png)
+![covarying features in the iris dataset](/assets/pca-1/cov_plot-1024x683.png)
 
 When we sum these products over all of the samples we can observe associations in
 our data. In the plot above we see a strong positive association and therefore
@@ -156,7 +243,7 @@ identical. When we standardize our data, they are the same.
 To see this we will take the formula for covariance and substitute
 the standardization formula in for our values.
 
-$$ 
+$$
 \begin{align}
 cov^{std}(\mathbf{x_j}, \mathbf{x_k}) &= \frac{1}{n}\sum_{i=1}^{n}(x_j^i-\mu_j)(x_k^i-\mu_k) \\
 
@@ -171,7 +258,7 @@ $$ cov^{std}(\mathbf{x_j}, \mathbf{x_k}) = \frac{1}{n}\sum_{i=1}^{n}(\frac{x_j^i
 
 The pearson correlation coefficient is defined as covariance normalized by the
 product of both variables' standard deviation. This is exactly what we have
-above. This becomes clear when we rewrite the statement 
+above. This becomes clear when we rewrite the statement
 
 $$ \rho_{jk} = \frac{\frac{1}{n}\sum_{i=1}^{n}(x_j^i-\mu_j)(x_k^i-\mu_k)}{\sigma_j\sigma_k} = \frac{cov(\mathbf{x_j}, \mathbf{x_k})}{\sigma_j \sigma_k} $$
 
@@ -186,9 +273,10 @@ pairwise standardized covariances and placing them all into a matrix as follows.
 
 $$
 \Sigma = \begin{bmatrix} 
-          \sigma_1^2 & cov(\mathbf{x_1}, \mathbf{x_2} & cov(\mathbf{x_1}, \mathbf{x_3}) & ... \\ 
-          cov(\mathbf{x_2}, \mathbf{x_1} & \sigma_2^2 & cov(\mathbf{x_2}, \mathbf{x_3} & ... \\
-           ... \\ 
+          \sigma_1^2 & cov(\mathbf{x_1}, \mathbf{x_2}) & cov(\mathbf{x_1}, \mathbf{x_3}) & ... \\ 
+          cov(\mathbf{x_2}, \mathbf{x_1}) & \sigma_2^2 & cov(\mathbf{x_2}, \mathbf{x_3}) & ... \\
+          cov(\mathbf{x_3}, \mathbf{x_1}) & cov(\mathbf{x_3}, \mathbf{x_2}) & \sigma_3^2 & ... \\
+           ... & ... & ... & ... \\ 
          \end{bmatrix}
 $$
 
@@ -200,7 +288,7 @@ Our covariance matrix for the iris dataset will look something like the
 visualization below. [The code for producing the values can be seen here](../assets/pca-1/PCA-companion-covariance.html)
 
 
-![covariance matrix for iris](../assets/pca-1/cov_mat.png)
+![covariance matrix for iris](/assets/pca-1/cov_mat.png)
 
 Along the diagonal, we see values of 1 which indicates a perfect matching 
 trend. This makes sense, a particular feature should be a perfect match with 
