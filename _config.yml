@@ -32,7 +32,7 @@ github_username:  godzilla-but-nicer
 remote_theme: jekyll/minima
 
 minima:
-  skin: auto
+  skin: dark
 
 plugins:
   - jekyll-feed
