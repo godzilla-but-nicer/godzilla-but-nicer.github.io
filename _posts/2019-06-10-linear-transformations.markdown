@@ -5,6 +5,7 @@ date:   2019-06-10 00:00:00 -0500
 categories: methods
 ---
 
+
 One of the most interesting features of matrices is their ability to serve as
 both a container for data and a tool for transforming data. When a vector is
 multiplied by a matrix, the matrix is said to perform a linear transformation
@@ -13,7 +14,7 @@ original vector. The vector could be rotated or stretched or flipped, but it is
 always based on the original vector. We can also always get the original vector
 back.
 
-Let's say we have a matrix $A$ and a vector $\mathbf{v}$
+Let's say we have a matrix $$A$$ and a vector $\mathbf{v}$
 
 $$
 A = \begin{bmatrix}
