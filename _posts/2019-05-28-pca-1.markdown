@@ -5,7 +5,7 @@ date:   2019-05-28 22:44:00 -0500
 categories: methods
 ---
 
-Let’s go ahead and assume that we have too many features. We don’t know which
+Let’s go ahead and assume that we have too many features. We don’t know which 
 features are important and we don’t care about whether our model directly 
 speaks the language of our features. This might be a job for…
 
